@@ -42,10 +42,11 @@ Set your API keys as environment variables:
 ```bash
 export OPENAI_API_KEY="your_openai_key"
 export ELEVENLABS_API_KEY="your_elevenlabs_key"
-
+```
 
 **For ElevenLabs:**
 Create a custom cloned voice in your dashboard and note its voice_id.
+
 Update the script:
 ELEVENLABS_VOICE_ID = "your_precreated_voice_id_here"
 
@@ -62,12 +63,16 @@ Audio outputs saved in each speaker’s results/ folder
 Metrics stored in benchmark_results_multisample.csv
 Visualization plots displayed inline
 
+---
 
 ### Metrics Collected
 
 Inference Time (s) per page per model
 Cost (USD) for industry APIs
 Cosine Similarity for open-source speaker embeddings (using SpeechBrain ECAPA)
+
+---
+
 
 ## Conclusion & Analysis
 **Strengths**
@@ -90,6 +95,7 @@ Cosine Similarity for open-source speaker embeddings (using SpeechBrain ECAPA)
 **Industry Models**: Require API keys; costs scale with usage
 
 ElevenLabs: Needs manual pre-creation of voices (cannot auto-create due to API limits)
+---
 
 ## Winner (Overall)
 For voice cloning realism → ElevenLabs
@@ -102,9 +108,9 @@ Use ElevenLabs for final audiobook / production pipelines
 Use OpenAI TTS for rapid prototyping & cost-effective narration
 Explore open-source for custom training and research
 
+---
 
-
-### Conclusion
+## Summary
 
 ##### The voice cloning benchmark revealed several key insights about the performance and usability of different models:
 
