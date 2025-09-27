@@ -85,3 +85,29 @@ python benchmark_notebook.py
 - Use **ElevenLabs** for final audiobook / production pipelines.
 - Use **OpenAI TTS** for rapid prototyping & cost-effective narration.
 - Explore **open-source** for custom training and research.
+
+
+### Conclusion
+
+##### The voice cloning benchmark revealed several key insights about the performance and usability of different models:
+
+#### Open-Source Models (Your_TTS, VITS):
+
+These models provide good voice cloning quality when multiple sample files per speaker are used.
+They are cost-effective and allow flexible multi-speaker cloning.
+The inference time is slightly higher compared to industry APIs, but they are fully under our control and can be scaled locally.
+
+#### Industry Models (ElevenLabs, OpenAI TTS, Azure TTS):
+
+ElevenLabs demonstrates very high-quality voice cloning and naturalness, producing near-human results.
+OpenAI and Azure TTS also deliver reliable output with consistent quality.
+
+However, when cloning multiple voices and generating a full audiobook with conversational details, the cost rises significantly, especially for models like ElevenLabs.Despite their efficiency and speed, scaling up to multiple voices or long-form content can become expensive, making open-source models preferable for projects requiring many speakers or extended audio.
+
+#### Overall Recommendation:
+
+For high-quality single-voice cloning, industry models like ElevenLabs are ideal.
+
+For multi-speaker audiobooks or budget-conscious scenarios, open-source TTS models like Your_TTS and VITS offer a practical balance between quality, flexibility, and cost.
+
+Combining open-source models for bulk content and industry models for premium segments could be a hybrid strategy for audiobook production.
