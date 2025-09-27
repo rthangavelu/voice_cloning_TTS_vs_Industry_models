@@ -1,142 +1,131 @@
-# Voice Cloning TTS Model Comparison – `your_tts` vs `vits`
-Data from https://www.kaggle.com/code/beastlyprime/tensorflow-speaker-verification
+# Voice Cloning Benchmark
 
-## Overview
-This project evaluates and compares **two Text-to-Speech (TTS) models** from [Coqui TTS](https://github.com/coqui-ai/TTS):
+Data from: [Kaggle TensorFlow Speaker Verification](https://www.kaggle.com/code/beastlyprime/tensorflow-speaker-verification)  
 
-- **`your_tts`** – Multilingual, zero-shot **voice cloning** model.  
-- **`tts_models/en/ljspeech/vits`** – VITS model trained on **LJ Speech**, optimized for natural English speech, but **not designed for voice cloning**.  
+This project benchmarks **open-source** and **industry** Text-to-Speech (TTS) / Voice Cloning models.
 
-The objective was to analyze **voice similarity (cloning quality)** and **performance (time taken)** between the two models.
+It uses **multi-sample per speaker** (multiple reference recordings for each speaker) and generates **one audio per text page per model**.
 
 ---
 
-## Vision
-My long-term vision is to **generate audiobooks in the author's own cloned voice – multilingual**.  
+## Features
 
-- It should take only a **few hours** to generate a full audiobook in **any given language**.  
-- I am experimenting with different models to evaluate **which best fits this goal**.  
+- Compare **Open Source Models**  
+  - SpeechBrain Tacotron2 + HiFiGAN  
+  - Coqui TTS, etc.  
 
----
+- Compare **Industry Models**  
+  - OpenAI GPT-4o-mini-TTS
+  - ElevenLabs TTS (with pre-created `voice_id`)  
 
-## Methodology
-
-1. **Reference Voices**  
-   - Several `.wav` reference recordings were used for cloning.  
-
-2. **Text Samples**  
-   - Multiple text passages/pages were synthesized for each voice.  
-
-3. **Evaluation Metrics**  
-   - **Cosine Similarity**: Speaker embedding similarity between original and cloned audio (higher = closer to target voice).  
-   - **Performance (Time Taken)**: Average time per sample across models.  
-
-4. **Visualization**  
-   - Bar charts comparing similarity per model & voice.  
-   - Performance plots comparing average synthesis times.  
+- Generate **page-wise audio outputs** for audiobook workflows  
+- Measure **inference time**, **cost**, and **similarity** (cosine similarity for open-source models)  
+- Visualize results with **bar plots** and **box plots**
 
 ---
 
-## 📂 Data File Structure
+## Project Structure
 data/
-├── Sample_Voice1/
-│   ├── voicefile_001.wav
-│   ├── voicefile_002.wav
-│   ├── voicefile_003.wav
-│
-├── Sample_Voice2/
-│   ├── voicefile_001.wav
-│   ├── voicefile_002.wav
-│   ├── voicefile_003.wav
-│
-├── Sample_Voice3/
-│   ├── voicefile_001.wav
-│   ├── voicefile_002.wav
-│   ├── voicefile_003.wav
+Sample_voice1/
+sample1.wav
+sample2.wav
+results/ # Auto-generated audio outputs
+Sample_voice2/
 
-
-Generated voice cloned files stored with Naming convention
-
-
-<file_name>_<model_name>_<page_name>.wav 
-
-data/
-├── Sample_Voice1/
-│   ├── results/
-│   │   ├── voicefile_001_xtts_v2_Page1.wav
-│   │   ├── voicefile_001_your_tts_Page2.wav
-│   │   ├── voicefile_002_vits_Page3.wav
-│
-├── Sample_Voice2/
-│   ├── results/
-│   │   ├── voicefile_001_xtts_v2_Page1.wav
-│   │   ├── voicefile_002_your_tts_Page2.wav
-│   │   ├── voicefile_003_vits_Page3.wav
 
 ---
 
-##  Results & Analysis
+## API Keys Setup
 
-###  Voice Similarity
-- **`your_tts`**:  
-  - Achieved **high similarity scores**, demonstrating effective zero-shot voice cloning.  
-  - Adapted well across multiple reference speakers.  
+Set your API keys as environment variables:
 
-- **`vits (ljspeech)`**:  
-  - Produced **natural-sounding speech**, but similarity scores were **low** since it is **not a cloning model**.  
-  - Output voice sounded closer to its **pretrained speaker (LJ Speech)** rather than the reference voice.  
+```bash
+export OPENAI_API_KEY="your_openai_key"
+export ELEVENLABS_API_KEY="your_elevenlabs_key"
 
- **Conclusion**: `your_tts` is clearly superior for cloning tasks, while `vits` is better suited for general English TTS when cloning is not required.
 
----
+**For ElevenLabs:**
+Create a custom cloned voice in your dashboard and note its voice_id.
+Update the script:
+ELEVENLABS_VOICE_ID = "your_precreated_voice_id_here"
 
-### Performance (Time Taken)
-- **`vits`**:  
-  - **Faster inference speed** due to single-speaker optimization.  
-- **`your_tts`**:  
-  - Slightly slower, as it processes **reference embeddings** for cloning.  
+#### Usage
 
- **Conclusion**:  
-If **speed and natural English speech** are the goal → `vits` wins.  
-If **voice cloning accuracy** is required → `your_tts` is the better choice.  
+Place sample voices in data/Sample_voice*/ folders
+Example: data/Sample_voice1/sample1.wav, sample2.wav
 
----
+#### Run the benchmark:
+python benchmark_notebook.py
 
-## Key Takeaways
-- **For cloning:** Use `your_tts`.  
-- **For fast & natural English TTS:** Use `vits`.  
-- Future work can include testing **`xtts_v2`** for even more natural multilingual cloning.  
+#### Results:
+Audio outputs saved in each speaker’s results/ folder
+Metrics stored in benchmark_results_multisample.csv
+Visualization plots displayed inline
 
----
 
-## Output Structure
+### Metrics Collected
 
-1. **Audio Files** – Stored under `/outputs/audio/{model}/`  
-2. **Similarity Scores** – CSV file: `multi_model_voice_similarity.csv`  
-3. **Performance Metrics** – CSV file: `performance_metrics.csv`  
-4. **Charts** – PNG charts comparing models  
+Inference Time (s) per page per model
+Cost (USD) for industry APIs
+Cosine Similarity for open-source speaker embeddings (using SpeechBrain ECAPA)
 
----
+## Conclusion & Analysis
+**Strengths**
+   _Open Source (SpeechBrain Tacotron2)_
+      Free to run, no API costs
+      Decent similarity with reference voices
+      Slower inference than industry APIs
 
-##  How to Run
+   _OpenAI GPT-4o-mini-TTS_
+      Very fast inference
+      High naturalness
+      Cost-efficient ($0.15/min)
+   _ElevenLabs_
+      Best voice cloning quality across multiple samples
+      Natural prosody and emotional variation
+      Easy API usage with pre-created voice_id
 
-1. Clone the repo & install dependencies:
-   ```bash
-   git clone <repo-url>
-   cd project_root
-   pip install -r requirements.txt
-   ```
+### Limitations
+**Open Source**: Struggles with prosody, requires GPU for speed
+**Industry Models**: Require API keys; costs scale with usage
 
-2. Run the notebook or Python script to generate audio & evaluate:
-   ```bash
-   jupyter notebook notebooks/VoiceCloning_Comparison.ipynb
-   ```
+ElevenLabs: Needs manual pre-creation of voices (cannot auto-create due to API limits)
 
-3. Results will be saved inside `/outputs/`.
+## Winner (Overall)
+For voice cloning realism → ElevenLabs
+For speed and cost-efficiency → OpenAI GPT-4o-mini-TTS
+For open research & free usage → SpeechBrain (Tacotron2 + HiFiGAN)
 
----
+## Recommendation
 
-##  Future Work
-- Add **XTTS-v2** and **Elevel-labs** to evaluation.  
-- Explore **scaling to full audiobook generation** in multiple languages.  
-- Investigate **GPU optimization** for faster inference.  
+Use ElevenLabs for final audiobook / production pipelines
+Use OpenAI TTS for rapid prototyping & cost-effective narration
+Explore open-source for custom training and research
+
+
+
+### Conclusion
+
+##### The voice cloning benchmark revealed several key insights about the performance and usability of different models:
+
+#### Open-Source Models (Your_TTS, VITS):
+
+These models provide good voice cloning quality when multiple sample files per speaker are used.
+They are cost-effective and allow flexible multi-speaker cloning.
+The inference time is slightly higher compared to industry APIs, but they are fully under our control and can be scaled locally.
+
+#### Industry Models (ElevenLabs, OpenAI TTS, Azure TTS):
+
+ElevenLabs demonstrates very high-quality voice cloning and naturalness, producing near-human results.
+OpenAI and Azure TTS also deliver reliable output with consistent quality.
+
+However, when cloning multiple voices and generating a full audiobook with conversational details, the cost rises significantly, especially for models like ElevenLabs.Despite their efficiency and speed, scaling up to multiple voices or long-form content can become expensive, making open-source models preferable for projects requiring many speakers or extended audio.
+
+#### Overall Recommendation:
+
+For high-quality single-voice cloning, industry models like ElevenLabs are ideal.
+
+For multi-speaker audiobooks or budget-conscious scenarios, open-source TTS models like Your_TTS and VITS offer a practical balance between quality, flexibility, and cost.
+
+Combining open-source models for bulk content and industry models for premium segments could be a hybrid strategy for audiobook production.
+
